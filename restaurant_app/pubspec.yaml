@@ -52,6 +52,8 @@ dev_dependencies:
   riverpod_generator: ^2.6.3
   build_runner: ^2.4.13
   custom_lint: ^0.7.0
+  mockito: ^5.4.4
+  http_mock_adapter: ^0.6.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
