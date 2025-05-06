@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'providers/api_providers.dart';
-import 'views/home_screen.dart';
+import 'views/home_page.dart';
 
 void main() {
-  runApp(const ProviderScope(child: RestaurantApp()));
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    // Wrap the entire app with ProviderScope to enable Riverpod
+    const ProviderScope(
+      child: RestaurantApp(),
+    ),
+  );
 }
 
-/// The main application widget
-class RestaurantApp extends ConsumerWidget {
+/// Main application widget
+class RestaurantApp extends StatelessWidget {
   /// Creates the main application widget
-  const RestaurantApp({super.key});
+  const RestaurantApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Restaurant App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primarySwatch: Colors.blue,
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
         fontFamily: 'Roboto',
       ),
-      home: const HomeScreen(),
+      home: const HomePage(),
     );
   }
 }
