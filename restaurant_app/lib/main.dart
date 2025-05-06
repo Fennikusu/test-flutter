@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'views/home_page.dart';
+import 'views/order_list_page.dart';
 
 void main() {
   // Ensure Flutter is initialized
@@ -29,7 +29,7 @@ class RestaurantApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const HomePage(),
+      home: const OrderListPage(),
     );
   }
 }

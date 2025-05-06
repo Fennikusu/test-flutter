@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/restaurant_provider.dart';
+import '../viewmodels/home_view_model.dart';
 
 /// Home page of the application that displays raw restaurant data
 class HomePage extends ConsumerStatefulWidget {
@@ -17,14 +18,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     // Fetch data when the widget is first created
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(restaurantProvider.notifier).fetchRestaurantData();
+      ref.read(homeViewModelProvider).fetchRestaurantData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Watch for changes in the restaurant state
+    // Watch for changes in the restaurant state through the view model
     final restaurantState = ref.watch(restaurantProvider);
+    final viewModel = ref.watch(homeViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +37,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              ref.read(restaurantProvider.notifier).fetchRestaurantData();
+              ref.read(homeViewModelProvider).fetchRestaurantData();
             },
           ),
         ],
@@ -77,7 +79,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  ref.read(restaurantProvider.notifier).fetchRestaurantData();
+                  ref.read(homeViewModelProvider).fetchRestaurantData();
                 },
                 child: const Text('Try Again'),
               ),
