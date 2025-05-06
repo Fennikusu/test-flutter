@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../viewmodels/home_view_model.dart';
 import '../models/models.dart';
 import '../providers/restaurant_provider.dart';
+import '../theme/app_theme.dart';
+import '../widgets/order_card.dart';
 import 'table_detail_page.dart';
 
 /// Page that displays the list of all orders
@@ -86,11 +88,21 @@ class _OrderListPageState extends ConsumerState<OrderListPage> {
       return state.data == null
           ? const Center(child: Text('No orders available'))
           : ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppTheme.padding),
         itemCount: state.data!.orders.length,
         itemBuilder: (context, index) {
           final order = state.data!.orders[index];
-          return _buildOrderCard(context, order);
+          return OrderCard(
+            order: order,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TableDetailPage(order: order),
+                ),
+              );
+            },
+          );
         },
       );
     }
@@ -99,111 +111,5 @@ class _OrderListPageState extends ConsumerState<OrderListPage> {
     return const Center(child: Text('Unexpected state'));
   }
 
-  /// Builds a card for displaying order information
-  Widget _buildOrderCard(BuildContext context, Order order) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TableDetailPage(order: order),
-          ),
-        );
-      },
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        elevation: 0,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade200),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  // Table number in red square
-                  Container(
-                    width: 80,
-                    height: 80,
-                    color: Colors.redAccent,
-                    child: Center(
-                      child: Text(
-                        order.table,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
 
-                  // Guest count and time
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.people,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${order.guests}',
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.access_time,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '18:20', // Using fixed time as shown in the screenshots
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Total price
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Text(
-                      order.formattedTotalPrice,
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

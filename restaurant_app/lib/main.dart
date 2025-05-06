@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'theme/app_theme.dart';
 import 'views/order_list_page.dart';
 
 void main() {
@@ -24,11 +25,7 @@ class RestaurantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Restaurant App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-      ),
+      theme: AppTheme.getTheme(),
       home: const OrderListPage(),
     );
   }

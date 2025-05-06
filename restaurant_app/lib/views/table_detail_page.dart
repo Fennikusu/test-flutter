@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
+import '../theme/app_theme.dart';
+import '../widgets/header_summary.dart';
+import '../widgets/menu_item_row.dart';
 
 /// Page that displays the details of a specific table's order
 class TableDetailPage extends StatelessWidget {
@@ -17,18 +20,26 @@ class TableDetailPage extends StatelessWidget {
     // Count total number of products
     final totalItems = order.items.length;
 
+    // Group similar items and count them
+    final groupedItems = <String, List<Item>>{};
+    for (final item in order.items) {
+      if (!groupedItems.containsKey(item.name)) {
+        groupedItems[item.name] = [];
+      }
+      groupedItems[item.name]!.add(item);
+    }
+
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey),
+          icon: const Icon(Icons.arrow_back_ios, color: AppTheme.textSecondaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'table ${order.table}',
           style: const TextStyle(
-            color: Colors.black54,
+            color: AppTheme.textSecondaryColor,
             fontWeight: FontWeight.w400,
             fontSize: 20,
           ),
@@ -38,55 +49,26 @@ class TableDetailPage extends StatelessWidget {
       body: Column(
         children: [
           // Header with total products and price
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey.shade300,
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '$totalItems produits',
-                  style: TextStyle(
-                    color: Colors.grey.shade400,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  order.formattedTotalPrice,
-                  style: TextStyle(
-                    color: Colors.blue.shade400,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+          HeaderSummary(
+            title: '$totalItems produits',
+            value: order.formattedTotalPrice,
+            isLargeValue: true,
           ),
 
           // List of items
           Expanded(
             child: ListView.builder(
-              itemCount: order.items.length,
+              itemCount: groupedItems.length,
               itemBuilder: (context, index) {
-                final item = order.items[index];
+                final itemName = groupedItems.keys.elementAt(index);
+                final items = groupedItems[itemName]!;
+                final item = items.first;
+                final count = items.length;
 
-                // Count occurrences of this item by name
-                final itemCount = _countSimilarItems(order.items, item.name);
-
-                // Skip if we've already displayed this item
-                if (index > 0 && _hasDisplayedBefore(order.items, item.name, index)) {
-                  return const SizedBox.shrink();
-                }
-
-                return _buildItemRow(item, itemCount);
+                return MenuItemRow(
+                  item: item,
+                  count: count,
+                );
               },
             ),
           ),
@@ -95,91 +77,4 @@ class TableDetailPage extends StatelessWidget {
     );
   }
 
-  /// Builds a row for an item in the order
-  Widget _buildItemRow(Item item, int count) {
-    // Parse the hex color code
-    Color itemColor;
-    try {
-      final hexColor = item.color.replaceFirst('#', '');
-      itemColor = Color(int.parse('FF$hexColor', radix: 16));
-    } catch (e) {
-      // Fallback color if parsing fails
-      itemColor = Colors.grey;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade200,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Item count
-          Container(
-            width: 64,
-            height: 64,
-            color: itemColor,
-            child: Center(
-              child: Text(
-                '$count',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          // Item name
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                item.name,
-                style: TextStyle(
-                  color: itemColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-
-          // Item price
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Text(
-              item.formattedPrice,
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Counts how many items with the same name exist in the list
-  int _countSimilarItems(List<Item> items, String name) {
-    return items.where((item) => item.name == name).length;
-  }
-
-  /// Checks if an item with the same name has already been displayed
-  bool _hasDisplayedBefore(List<Item> items, String name, int currentIndex) {
-    for (int i = 0; i < currentIndex; i++) {
-      if (items[i].name == name) {
-        return true;
-      }
-    }
-    return false;
-  }
 }
