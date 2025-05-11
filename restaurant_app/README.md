@@ -1,16 +1,33 @@
-# restaurant_app
+Restaurant App
+Flutter test project for JDC company - Restaurant order management application.
+Overview
+A mobile application that displays restaurant orders and table details.
+Architecture
+MVVM Pattern with Flutter Riverpod
 
-A new Flutter project.
+Dependencies:
+flutter_riverpod - State management
+dio - HTTP client for API calls
 
-## Getting Started
+Project Structure
+lib/
+├── models/          # Data models
+├── providers/       # Riverpod state management
+├── services/        # API integration
+├── theme/          # App theming
+├── viewmodels/     # Business logic
+├── views/          # UI screens
+└── widgets/        # Reusable components
 
-This project is a starting point for a Flutter application.
+Data Source
+Fetches restaurant data from:
+https://raw.githubusercontent.com/popina/test-flutter/main/data.json
 
-A few resources to get you started if this is your first Flutter project:
+How to Run
+bashflutter pub get
+flutter run
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Notes
+Comments have been automatically generated
+Time display shows static value (18:20) as API doesn't provide timestamps
+Test project for JDC company
